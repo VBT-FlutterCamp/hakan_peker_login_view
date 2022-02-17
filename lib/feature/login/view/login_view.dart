@@ -138,10 +138,7 @@ class _LoginViewState extends State<LoginView> {
   Row _buttonText() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(AppString.dontHaveAccountText),
-        TextButton(onPressed: () {}, child: Text(AppString.createText)),
-      ],
+      children: [Text(AppString.dontHaveAccountText), TextButton(onPressed: () {}, child: Text(AppString.createText))],
     );
   }
 }

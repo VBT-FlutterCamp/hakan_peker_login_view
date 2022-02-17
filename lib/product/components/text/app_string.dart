@@ -3,7 +3,7 @@ class AppString {
   static const String designText = "Design Relish";
   static const String emailText = "Email Address";
   static const String passwordText = "Password";
-  static const String forgotPasswordText = "Forgot Password";
+  static const String forgotPasswordText = "Forgot Password ?";
   static const String loginButtonText = "LOGIN";
   static const String dontHaveAccountText = "Don't have an account ?";
   static const String createText = "Create";
