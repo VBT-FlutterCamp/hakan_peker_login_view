@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 
 import '../../../product/components/text/app_string.dart';
+import '../../../product/widget/custom_elevated_button.dart';
+import '../../../product/widget/custom_text_form_field.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -23,39 +25,44 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        physics: _emailNode.hasFocus || _passwordNode.hasFocus ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
         child: Padding(
           padding: context.verticalPaddingHigh,
           child: Padding(
             padding: context.paddingNormal,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: context.highValue,
-                ),
-                Text(AppString.welcomeText, style: Theme.of(context).textTheme.headlineSmall),
-                Text(
-                  AppString.designText,
-                  style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-                SizedBox(
-                  height: context.normalValue,
-                ),
-                _buildForm(context),
-                _forgotPasswordText(),
-                SizedBox(
-                  height: context.normalValue,
-                ),
-                _elevatedButton(),
-                SizedBox(
-                  height: context.dynamicHeight(0.2),
-                ),
-                _buttonText(),
-              ],
-            ),
+            child: _pageColumn(context),
           ),
         ),
       ),
+    );
+  }
+
+  Column _pageColumn(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: context.highValue,
+        ),
+        Text(AppString.welcomeText, style: Theme.of(context).textTheme.headlineSmall),
+        Text(
+          AppString.designText,
+          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        SizedBox(
+          height: context.normalValue,
+        ),
+        _buildForm(context),
+        _forgotPasswordText(),
+        SizedBox(
+          height: context.normalValue,
+        ),
+        _elevatedButton(),
+        SizedBox(
+          height: context.dynamicHeight(0.2),
+        ),
+        _buttonText(),
+      ],
     );
   }
 
@@ -70,37 +77,15 @@ class _LoginViewState extends State<LoginView> {
         ));
   }
 
-  Padding _emailTextFormField(BuildContext context) {
-    return Padding(
-      padding: context.verticalPaddingLow,
-      child: TextFormField(
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return AppString.emailValidationText;
-          }
-          return null;
-        },
-        controller: _mailController,
-        keyboardType: TextInputType.emailAddress,
-        decoration: const InputDecoration(
-          labelText: AppString.emailText,
-          border: OutlineInputBorder(),
-        ),
-        focusNode: _emailNode,
-      ),
-    );
+  Widget _emailTextFormField(BuildContext context) {
+    return CustomTextFormField(
+        formFieldController: _mailController, keyboardType: TextInputType.emailAddress, labelText: AppString.emailText, focusNode: _emailNode);
   }
 
   Padding _passwordTextFormField(BuildContext context) {
     return Padding(
       padding: context.verticalPaddingLow,
       child: TextFormField(
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return AppString.passwordValidationText;
-          }
-          return null;
-        },
         obscureText: isPasswordVisible,
         focusNode: _passwordNode,
         controller: _passwordController,
@@ -111,34 +96,25 @@ class _LoginViewState extends State<LoginView> {
             onPressed: () => setState(() {
               isPasswordVisible = !isPasswordVisible;
             }),
-            icon: isPasswordVisible ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+            icon: isPasswordVisible ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
           ),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     );
   }
 
   Align _forgotPasswordText() =>
-      Align(alignment: Alignment.centerRight, child: TextButton(onPressed: () {}, child: Text(AppString.forgotPasswordText)));
+      Align(alignment: Alignment.centerRight, child: TextButton(onPressed: () {}, child: const Text(AppString.forgotPasswordText)));
 
-  Center _elevatedButton() {
-    return Center(
-        child: ElevatedButton(
-      onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppString.successText)));
-        }
-      },
-      child: const Text(AppString.loginButtonText),
-      style: ElevatedButton.styleFrom(fixedSize: const Size(350, 60)),
-    ));
+  Widget _elevatedButton() {
+    return CustomElevatedButton(formKey: _formKey);
   }
 
   Row _buttonText() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [Text(AppString.dontHaveAccountText), TextButton(onPressed: () {}, child: Text(AppString.createText))],
+      children: [const Text(AppString.dontHaveAccountText), TextButton(onPressed: () {}, child: const Text(AppString.createText))],
     );
   }
 }
